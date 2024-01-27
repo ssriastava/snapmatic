@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="signup.js"></script>
+  <script src="login.js"></script>
+  <script src="load.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In / Sign Up</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+      width: 400px;
+      text-align: center;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 15px;
+      cursor: pointer;
+      font-size: 16px;
+      border: 1px solid transparent;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .tab:hover {
+      background-color: #f9f9f9;
+    }
+
+    .tab.active {
+      background-color: #fff;
+      border: 1px solid #ccc;
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: none;
+      flex-direction: column;
+      margin-top: 20px;
+    }
+
+    input {
+      margin-bottom: 15px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    button {
+      background-color: #3498db;
+      color: #fff;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .switch {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .switch a {
+      color: #3498db;
+      text-decoration: none;
+    }
+
+    .switch a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body onload="loadpage()">
+
+  <div class="container">
+    <div class="tabs">
+      <div class="tab active" onclick="changeTab('signInTab')">Sign In</div>
+      <div class="tab" onclick="changeTab('signUpTab')">Sign Up</div>
+    </div>
+
+    <div id="signInTab">
+      <h2>Welcome Back!</h2>
+        <input type="text" placeholder="Username" id="lusername" required>
+        <input type="password" placeholder="Password" id="lpassword" required>
+        <button type="submit" onclick="login()">Sign In</button>
+    </div>
+
+    <div id="signUpTab" style="display: none;">
+      <h2>Create an Account</h2>
+        <input type="text" placeholder="Username" id="username" required>
+        <input type="email" placeholder="Email" id="email" required>
+        <input type="password" placeholder="Password" id="password" required>
+        <input type="password" placeholder="Confirm Password" id=cpassword required>
+        <button type="submit" onclick="signup()">Sign Up</button>
+    </div>
+
+    <div class="switch">
+      <p>Already have an account? <a href="#" onclick="toggleForm()">Sign In</a></p>
+    </div>
+    <div id="message">
+    </div>
+  </div>
+
+  <script>
+    function changeTab(tabId) {
+      document.getElementById('signInTab').style.display = 'none';
+      document.getElementById('signUpTab').style.display = 'none';
+      document.getElementById(tabId).style.display = 'block';
+
+      document.querySelector('.tabs .tab.active').classList.remove('active');
+      //document.querySelector('.tabs .tab[data-tab="' + tabId + '"]').classList.add('active');
+    }
+
+    function toggleForm() {
+      var signInTab = document.getElementById('signInTab');
+      signInTab.style.display = 'block';
+      document.getElementById('signUpTab').style.display = 'none';
+
+      document.querySelector('.tabs .tab.active').classList.remove('active');
+      document.querySelector('.tabs .tab[data-tab="signInTab"]').classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

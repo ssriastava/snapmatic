@@ -6,7 +6,7 @@ function signup(){
 	
 	if(pwd==cpwd){
 		let xhr = new XMLHttpRequest();
-		xhr.open("POST", "http://localhost:8080/signup");
+		xhr.open("POST", config.url+"signup");
 		xhr.setRequestHeader("Accept", "application/json");
 		xhr.setRequestHeader("Content-Type", "application/json");
 		xhr.onreadystatechange = function () {

@@ -3,6 +3,8 @@ package com.snapmatic.auth.config;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,16 +19,32 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 @Configuration
 public class AuthConfig {
 	
-	private final DataSource dataSource;
+	@Value("${jdbc.driverClass}")
+	private String driverclass;
+	
+	@Value("${jdbc.url}")
+	private String jdbcurl;
+	
+	@Value("${jdbc.user}")
+	private String jdbcusername;
+	
+	@Value("${jdbc.password}")
+	private String jdbcpassword;
+	
 
-    @Autowired
-    public AuthConfig(DataSource dataSource) {
-        this.dataSource = dataSource;
+	@Bean
+    public DataSource getDataSource() {
+        DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
+        dataSourceBuilder.driverClassName(driverclass);
+        dataSourceBuilder.url(jdbcurl);
+        dataSourceBuilder.username(jdbcusername);
+        dataSourceBuilder.password(jdbcpassword);
+        return dataSourceBuilder.build();
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(dataSource);
+    public JdbcTemplate jdbcTemplate(DataSource datasource) {
+        return new JdbcTemplate(datasource);
     }
     
     @Bean

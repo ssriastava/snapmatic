@@ -1,5 +1,7 @@
 package com.snapmatic.auth.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,8 @@ public class AuthController {
 	@Autowired
 	AuthService authservice;
 	
+	Logger log=LoggerFactory.getLogger(AuthController.class);
+	
 	@PostMapping("/signup")
 	public ResponseDTO signUp(@RequestBody SignUpDTO signup) {
 		return authservice.signup(signup);
@@ -28,6 +32,7 @@ public class AuthController {
 	
 	@PostMapping("/login")
 	public ResponseDTO login(@RequestBody LoginDTO login, HttpServletResponse response) {
+		log.debug("login request. "+login.getUsername());
 		ResponseDTO resp=authservice.login(login);
 		Cookie cookie=new Cookie("Session-id",resp.getMessage());
 		cookie.setHttpOnly(true);

@@ -2,6 +2,8 @@ package com.snapmatic.auth.config;
 
 import javax.sql.DataSource;
 
+import com.snapmatic.auth.dao.ConfigDao;
+import com.snapmatic.auth.dto.ConfigDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -15,6 +17,9 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 public class AuthConfig {
@@ -30,6 +35,9 @@ public class AuthConfig {
 	
 	@Value("${jdbc.password}")
 	private String jdbcpassword;
+
+    @Value("${auth.url}")
+    private String authdomain;
 	
 
 	@Bean
@@ -67,6 +75,19 @@ public class AuthConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationProvider authenticationProvider) {
     	return new ProviderManager(authenticationProvider);
+    }
+
+    @Bean
+    public List<ConfigDTO> configDTOList(){
+        ConfigDTO config1=new ConfigDTO("auth.url", authdomain);
+        List<ConfigDTO> list=new ArrayList<ConfigDTO>();
+        list.add(config1);
+        return list;
+    }
+
+    @Bean
+    public ConfigDao configDao(List<ConfigDTO> list){
+        return new ConfigDao(list);
     }
 
 }

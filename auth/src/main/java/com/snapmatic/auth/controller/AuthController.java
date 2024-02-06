@@ -1,8 +1,10 @@
 package com.snapmatic.auth.controller;
 
+import com.snapmatic.auth.dto.ConfigDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +18,8 @@ import com.snapmatic.auth.service.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.List;
 
 @RestController
 public class AuthController {
@@ -53,9 +57,14 @@ public class AuthController {
 			return resp;
 		}
 		else {
-			ResponseDTO resp=new ResponseDTO(-1, "Logged off", false);
-			return resp;
+			return new ResponseDTO(-1, "Logged off", false);
 		}
+	}
+
+	@GetMapping("/config")
+	public List<ConfigDTO> fetchConfig() {
+		log.debug("fetch config data service start");
+		return authservice.fetchConfigData();
 	}
 	
 	

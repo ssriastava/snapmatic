@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapmatic</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            position: relative;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding-bottom: 60px; /* Space for Add Friend button */
+        }
+        .header {
+            background-color: #128C7E;
+            color: #fff;
+            padding: 20px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 {
+            margin: 0;
+            font-weight: normal;
+        }
+        .search-container {
+            display: none;
+            align-items: center;
+            padding: 10px;
+        }
+        .search-input {
+            padding: 8px;
+            border-radius: 20px;
+            border: none;
+            outline: none;
+            width: 200px;
+            margin-right: 10px;
+        }
+        .search-icon {
+            font-size: 18px;
+            color: #fff;
+            cursor: pointer;
+        }
+        .add-friend-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: none;
+            background-color: #0d8050;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .add-friend-btn:hover {
+            background-color: #0c6a43;
+        }
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .contact-item {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .contact-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Chat</h1>
+        <div class="search-container" id="search-container">
+            <input type="text" class="search-input" placeholder="Search...">
+        </div>
+        <button id="toggle-search-btn" onclick="toggleSearch()" class="search-icon">&#128269;</button>
+    </div>
+    <ul class="contact-list">
+        <li class="contact-item" onclick="openChat('John')">John</li>
+        <li class="contact-item" onclick="openChat('Alice')">Alice</li>
+        <li class="contact-item" onclick="openChat('Bob')">Bob</li>
+        <!-- Add more contacts as needed -->
+    </ul>
+    <button class="add-friend-btn" onclick="addFriend()">Add Friend</button>
+</div>
+
+<script>
+    function toggleSearch() {
+        var searchContainer = document.getElementById("search-container");
+        var toggleButton = document.getElementById("toggle-search-btn");
+        if (searchContainer.style.display === "none") {
+            searchContainer.style.display = "flex";
+            toggleButton.classList.add("active");
+        } else {
+            searchContainer.style.display = "none";
+            toggleButton.classList.remove("active");
+        }
+    }
+
+    function openChat(contactName) {
+        // You can redirect to the chat page passing the contact name as a parameter
+        // For demo purpose, we'll just log the contact name to the console
+        console.log("Opening chat with " + contactName);
+        // Replace the next line with window.location.href = "chat.html?contact=" + contactName; to redirect
+    }
+
+    function addFriend() {
+        // Implement your add friend functionality here
+        alert("Add Friend functionality is not implemented yet!");
+    }
+</script>
+</body>
+</html>

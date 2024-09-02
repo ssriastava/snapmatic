@@ -1,18 +1,12 @@
 package com.snapmatic.auth.controller;
 
-import com.snapmatic.auth.dto.ConfigDTO;
+import com.snapmatic.auth.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.WebUtils;
 
-import com.snapmatic.auth.dto.LoginDTO;
-import com.snapmatic.auth.dto.ResponseDTO;
-import com.snapmatic.auth.dto.SignUpDTO;
 import com.snapmatic.auth.service.AuthService;
 
 import jakarta.servlet.http.Cookie;
@@ -28,38 +22,31 @@ public class AuthController {
 	AuthService authservice;
 	
 	Logger log=LoggerFactory.getLogger(AuthController.class);
-	
+
 	@PostMapping("/signup")
 	public ResponseDTO signUp(@RequestBody SignUpDTO signup) {
 		return authservice.signup(signup);
 	}
-	
+
+
 	@PostMapping("/login")
-	public ResponseDTO login(@RequestBody LoginDTO login, HttpServletResponse response) {
+	public UserDetailsDTO login(@RequestBody LoginDTO login, HttpServletResponse response) {
 		log.debug("login request. "+login.getUsername());
-		ResponseDTO resp=authservice.login(login);
-		Cookie cookie=new Cookie("Session-id",resp.getMessage());
-		cookie.setHttpOnly(true);
-		cookie.setMaxAge(60*15);
-		response.addCookie(cookie);
-		return resp;
+		return authservice.login(login);
 	}
-	
+
+
 	@PostMapping("/refreshtoken")
-	public ResponseDTO refresh(HttpServletRequest request, HttpServletResponse response) {
-		if(WebUtils.getCookie(request, "Session-id")!=null)
+	public UserDetailsDTO refresh(@RequestBody RefreshTokenDTO tokenDTO, HttpServletRequest request, HttpServletResponse response) {
+		if(!(tokenDTO.getToken()==null || tokenDTO.getToken().isEmpty()))
 		{
-			ResponseDTO resp=authservice.refreshToken(WebUtils.getCookie(request, "Session-id").getValue());
-			Cookie cookie=new Cookie("Session-id",resp.getMessage());
-			cookie.setHttpOnly(true);
-			cookie.setMaxAge(60*15);
-			response.addCookie(cookie);
-			return resp;
+			return authservice.refreshToken(tokenDTO.getToken());
 		}
 		else {
-			return new ResponseDTO(-1, "Logged off", false);
+			return new UserDetailsDTO("token not present in input", "", false);
 		}
 	}
+
 
 	@GetMapping("/config")
 	public List<ConfigDTO> fetchConfig() {

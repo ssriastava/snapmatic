@@ -3,8 +3,11 @@ package com.snapmatic.auth.service;
 import java.util.HashMap;
 import java.util.List;
 
+import com.snapmatic.auth.controller.AuthController;
 import com.snapmatic.auth.dao.ConfigDao;
 import com.snapmatic.auth.dto.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,20 +30,23 @@ public class AuthService {
 	
 	@Autowired
 	JwtUtil jwt;
-	
+
+	Logger log=LoggerFactory.getLogger(AuthService.class);
+
+
 	public ResponseDTO signup(SignUpDTO signup) {
 		authdao.insertUser(signup);
 		authdao.insertAuthority(signup);
 		return new ResponseDTO(1, "Successfully Signed Up", true);
 	}
 	
-	public ResponseDTO login(LoginDTO login) {
+	public UserDetailsDTO login(LoginDTO login) {
 		Authentication authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(login.getUsername(), login.getPassword());
 		Authentication auth=authmanager.authenticate(authenticationRequest);
 		if(auth.isAuthenticated()) {
-			return new ResponseDTO(1, createJwtToken(auth), true);
+			return new UserDetailsDTO(createJwtToken(auth), login.getUsername(), true);
 		} else {
-			return new ResponseDTO(0, "Authentication failed", false);
+			return new UserDetailsDTO("wrong uid/password", "Authentication failed", false);
 		}
 	}
 	
@@ -49,16 +55,20 @@ public class AuthService {
 		return jwt.createToken(map ,auth.getName());
 	} 
 	
-	public ResponseDTO refreshToken(String token) {
-		ResponseDTO response;
-		if(jwt.isTokenExpired(token)) {
-			response=new ResponseDTO(-1, "token expired", false);
-		}
-		else {
+	public UserDetailsDTO refreshToken(String token) {
+		log.debug("token"+token);
+		UserDetailsDTO userdetails;
+		boolean isTokenExpired = jwt.isTokenExpired(token);
+		String username = jwt.extractUsername(token);
+		if(isTokenExpired) {
+			userdetails=new UserDetailsDTO("token expired", "", false);
+		} else if(username == null || username.isEmpty()) {
+			userdetails=new UserDetailsDTO("token expired", "", false);
+		} else {
 			HashMap<String, Object> map=new HashMap<String, Object>();
-			response=new ResponseDTO(1, jwt.createToken(map, jwt.extractUsername(token)), true);
+			userdetails=new UserDetailsDTO(jwt.createToken(map, username), username, true);
 		}
-		return response;
+		return userdetails;
 	}
 
 	public List<ConfigDTO> fetchConfigData(){

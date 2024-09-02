@@ -1,5 +1,7 @@
 package com.snapmatic.auth.components;
 
+import com.snapmatic.auth.dto.UserDetailsDTO;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -25,11 +27,19 @@ public class AuthControllerAdvice {
 	}
 	
 	@ExceptionHandler(value=BadCredentialsException.class)
-	public ResponseEntity<ResponseDTO> badCredentialException(BadCredentialsException exception){
+	public ResponseEntity<UserDetailsDTO> badCredentialException(BadCredentialsException exception){
 		exception.printStackTrace();
-		ResponseDTO response=new ResponseDTO(-1, "Bad Credentials: "+exception.getMessage(), false);
+		UserDetailsDTO response=new UserDetailsDTO("no token", "", false);
 		log.error("Error While Accessing Database"+exception);
-		return new ResponseEntity<ResponseDTO>(response, HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<UserDetailsDTO>(response, HttpStatus.UNAUTHORIZED);
+	}
+
+	@ExceptionHandler(value = ExpiredJwtException.class)
+	public ResponseEntity<UserDetailsDTO> jwtExpiredException(ExpiredJwtException exception) {
+		exception.printStackTrace();
+		UserDetailsDTO response = new UserDetailsDTO("token expired", "", false);
+		log.error("token is expired"+ exception);
+		return new ResponseEntity<UserDetailsDTO>(response, HttpStatus.UNAUTHORIZED);
 	}
 
 }
